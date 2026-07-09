@@ -12,7 +12,7 @@ outputs:
       ts of the approval-request message posted to Slack, for threading
       follow-up messages. Empty if the action failed before posting it.
 runs:
-  using: "node16"
+  using: "node24"
   main: "dist/index.js"
 branding:
   icon: plus
