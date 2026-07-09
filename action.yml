@@ -7,6 +7,10 @@ outputs:
       The explicit human decision: "approved" or "rejected". Empty when the
       action ended without a decision (crash, timeout, cancellation) — callers
       should treat that as an error, not a rejection.
+  slack_message_ts:
+    description: >-
+      ts of the approval-request message posted to Slack, for threading
+      follow-up messages. Empty if the action failed before posting it.
 runs:
   using: "node16"
   main: "dist/index.js"

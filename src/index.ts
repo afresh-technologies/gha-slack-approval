@@ -79,8 +79,12 @@ async function run(): Promise<void> {
         ]
       });
 
+      // Expose the request message's ts so callers can thread follow-ups
+      // (e.g. a failure notice) under it. Empty if we crash before posting.
+      core.setOutput('slack_message_ts', result.ts || '');
+
       for(let i = 0; i < approvers.length; i++) {
-        await web.chat.postMessage({ 
+        await web.chat.postMessage({
           channel: channel_id,
           thread_ts: result.ts,
           text: "GitHub Actions Approval request",

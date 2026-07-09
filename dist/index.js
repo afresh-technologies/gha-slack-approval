@@ -105,6 +105,9 @@ function run() {
                         }
                     ]
                 });
+                // Expose the request message's ts so callers can thread follow-ups
+                // (e.g. a failure notice) under it. Empty if we crash before posting.
+                core.setOutput('slack_message_ts', result.ts || '');
                 for (let i = 0; i < approvers.length; i++) {
                     yield web.chat.postMessage({
                         channel: channel_id,
