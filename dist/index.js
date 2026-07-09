@@ -175,6 +175,7 @@ function run() {
                             console.log(`Received approval for ${approvers[i]} from ${body.user.id}`);
                             console.log(`${approvers.length - approvals_received.size} approvals still needed.`);
                             if (approvals_received.size == approvers.length) {
+                                core.setOutput('decision', 'approved');
                                 process.exit(0);
                             }
                         }
@@ -204,6 +205,7 @@ function run() {
                                 blocks: response_blocks
                             });
                             console.log(`Rejection received for ${approvers[i]} from ${body.user.id}.`);
+                            core.setOutput('decision', 'rejected');
                             process.exit(1);
                         }
                     }
