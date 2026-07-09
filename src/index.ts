@@ -79,8 +79,12 @@ async function run(): Promise<void> {
         ]
       });
 
+      // Expose the request message's ts so callers can thread follow-ups
+      // (e.g. a failure notice) under it. Empty if we crash before posting.
+      core.setOutput('slack_message_ts', result.ts || '');
+
       for(let i = 0; i < approvers.length; i++) {
-        await web.chat.postMessage({ 
+        await web.chat.postMessage({
           channel: channel_id,
           thread_ts: result.ts,
           text: "GitHub Actions Approval request",
@@ -153,6 +157,7 @@ async function run(): Promise<void> {
             console.log(`${approvers.length - approvals_received.size} approvals still needed.`);
 
             if(approvals_received.size == approvers.length) {
+              core.setOutput('decision', 'approved');
               process.exit(0);
             }
           }
@@ -183,7 +188,8 @@ async function run(): Promise<void> {
             });
 
             console.log(`Rejection received for ${approvers[i]} from ${body.user.id}.`);
-  
+
+            core.setOutput('decision', 'rejected');
             process.exit(1);
           }
         } catch (error) {
