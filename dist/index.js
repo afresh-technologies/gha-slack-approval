@@ -33,12 +33,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
-const bolt_1 = require("@slack/bolt");
 const web_api_1 = require("@slack/web-api");
 const crypto_1 = require("crypto");
+const app_1 = require("./app");
 const token = process.env.SLACK_BOT_TOKEN || "";
-const signingSecret = process.env.SLACK_SIGNING_SECRET || "";
-const slackAppToken = process.env.SLACK_APP_TOKEN || "";
 const channel_id = process.env.SLACK_CHANNEL_ID || "";
 const environment = process.env.ENVIRONMENT || "";
 const url = process.env.URL || "";
@@ -48,17 +46,11 @@ const requestReason = process.env.REQUEST_REASON || "";
 const runport = process.env.PORT || 3000;
 const acceptValue = `${(0, crypto_1.randomUUID)()}-approve`;
 const rejectValue = `${(0, crypto_1.randomUUID)()}-reject`;
-const app = new bolt_1.App({
-    token: token,
-    signingSecret: signingSecret,
-    appToken: slackAppToken,
-    socketMode: true,
-    logLevel: bolt_1.LogLevel.DEBUG,
-});
 var approvals_received = new Set();
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const app = (0, app_1.createApp)();
             const web = new web_api_1.WebClient(token);
             const github_server_url = process.env.GITHUB_SERVER_URL || "";
             const github_repos = process.env.GITHUB_REPOSITORY || "";
