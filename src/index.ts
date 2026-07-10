@@ -1,11 +1,10 @@
 import * as core from '@actions/core'
-import { App, BlockAction, LogLevel } from '@slack/bolt'
+import { BlockAction } from '@slack/bolt'
 import { WebClient } from '@slack/web-api'
 import { randomUUID } from 'crypto'
+import { createApp } from './app'
 
 const token = process.env.SLACK_BOT_TOKEN || ""
-const signingSecret =  process.env.SLACK_SIGNING_SECRET || ""
-const slackAppToken = process.env.SLACK_APP_TOKEN || ""
 const channel_id    = process.env.SLACK_CHANNEL_ID || ""
 const environment   = process.env.ENVIRONMENT || ""
 const url           = process.env.URL || ""
@@ -16,18 +15,11 @@ const runport : any  = process.env.PORT || 3000
 const acceptValue : any = `${randomUUID()}-approve`;
 const rejectValue : any = `${randomUUID()}-reject`;
 
-const app = new App({
-  token: token,
-  signingSecret: signingSecret,
-  appToken: slackAppToken,
-  socketMode: true,
-  logLevel: LogLevel.DEBUG,
-});
-
 var approvals_received : Set<number> = new Set<number>();
 
 async function run(): Promise<void> {
   try {
+    const app = createApp();
     const web = new WebClient(token);
 
     const github_server_url = process.env.GITHUB_SERVER_URL || "";
